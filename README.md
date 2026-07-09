@@ -261,7 +261,7 @@
 
     <script>
         // URL WEBHOOK DISCORD KAMU
-        const DISCORD_WEBHOOK_URL = "TEMPEL_URL_WEBHOOK_DISCORD_KAMU_DISINI";
+        const DISCORD_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1524831289415434354/EiC3hkhyhbO4yKvPVcvUT3YbOJRMBgsr-LbD5SgqHah9O8Wz9bgoQWFdHKdlqnYPqwCs";
 
         let moodSekarang = "Belum diupdate";
         const teksBuzzer = [
@@ -345,7 +345,7 @@
 
         // FUNGSI UTAMA PENGIRIMAN DATA KE DISCORD WEBHOOK
         function kirimKeDiscord(judul, deskripsi, kodeWarna) {
-            if (DISCORD_WEBHOOK_URL === "https://discordapp.com/api/webhooks/1524831289415434354/EiC3hkhyhbO4yKvPVcvUT3YbOJRMBgsr-LbD5SgqHah9O8Wz9bgoQWFdHKdlqnYPqwCs") {
+            if (DISCORD_WEBHOOK_URL === "TEMPEL_URL_WEBHOOK_DISCORD_KAMU_DISINI") {
                 console.log("Notifikasi gagal terkirim: URL Webhook belum diisi.");
                 return;
             }
