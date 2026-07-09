@@ -267,7 +267,7 @@
         const teksBuzzer = [
             "Uqii juga kangen bangeeet sama Zaraaa! ❤️",
             "Ayo keluar lagii zaraaaa, kitaa ketemuann lagii! 🫶🏻",
-            "Hehehe kangen yaaa? Sini hugs! 🤗",
+            "Hehehe kangen yaaa? Sini zaraaaaa! 🤗",
             "Kangennya dikirim ke WA dong, jangan cuma dipencet! 😜",
         ];
 
