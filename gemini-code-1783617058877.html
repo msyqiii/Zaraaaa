@@ -345,7 +345,7 @@
 
         // FUNGSI UTAMA PENGIRIMAN DATA KE DISCORD WEBHOOK
         function kirimKeDiscord(judul, deskripsi, kodeWarna) {
-            if (DISCORD_WEBHOOK_URL === "https://discordapp.com/api/webhooks/1524823596617433322/23RVTPsLBKsCXNHxqwAvoqPsh4W9yemQnMgfUR833HERI5lRikafLtYkFdfdoraMZMWL") {
+            if (DISCORD_WEBHOOK_URL === "https://discordapp.com/api/webhooks/1524831289415434354/EiC3hkhyhbO4yKvPVcvUT3YbOJRMBgsr-LbD5SgqHah9O8Wz9bgoQWFdHKdlqnYPqwCs") {
                 console.log("Notifikasi gagal terkirim: URL Webhook belum diisi.");
                 return;
             }
