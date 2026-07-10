@@ -335,7 +335,6 @@
 </head>
 <body>
 
-    <!-- Wadah Custom Toast -->
     <div id="custom-toast" class="toast-container">
         <span id="toast-icon" class="toast-icon">✨</span>
         <span id="toast-msg" class="toast-msg">Notifikasi Baru!</span>
@@ -347,7 +346,6 @@
             <p>Zaraaa's secret interaction room</p>
         </div>
 
-        <!-- FITUR 1: DAILY MOOD PICKER -->
         <div class="section-title">📊 Update Mood Kamu Hari Ini</div>
         <div class="mood-container">
             <div class="mood-box" onclick="pilihMood(this, '😊 Senang')">
@@ -368,7 +366,6 @@
             </div>
         </div>
 
-        <!-- BARU: CUSTOM LOVE PROGRESS BAR -->
         <div class="section-title">📈 Level Kangen Zaraaa Hari Ini</div>
         <div class="bucin-wrapper">
             <div class="bucin-header">
@@ -381,7 +378,6 @@
             </div>
         </div>
 
-        <!-- FITUR 2: LOVE BUZZER -->
         <div class="section-title">❤️ Love Buzzer</div>
         <div class="buzzer-wrapper">
             <p style="font-size: 0.8rem; color: #777;">Pencet tombol hati di bawah kalau lagi kangen Uqii!</p>
@@ -389,7 +385,6 @@
             <p id="buzzer-text"></p>
         </div>
 
-        <!-- FITUR 3: EMERGENCY HUG -->
         <div class="section-title">🚨 Tombol Darurat</div>
         <div class="action-container">
             <button class="btn-emergency" onclick="panggilDarurat()">
@@ -397,7 +392,6 @@
             </button>
         </div>
 
-        <!-- FITUR 4: STICKY NOTES -->
         <div class="section-title">📌 Titip Catatan Kecil</div>
         <div class="note-section">
             <textarea class="note-input" id="note-text" rows="2" placeholder="Tulis pesan random atau titipan buat Uqii di sini..."></textarea>
@@ -406,7 +400,6 @@
     </div>
 
     <script>
-        // === MASUKKAN URL WEBHOOK DISCORD KAMU DI SINI ===
         const DISCORD_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1524831289415434354/EiC3hkhyhbO4yKvPVcvUT3YbOJRMBgsr-LbD5SgqHah9O8Wz9bgoQWFdHKdlqnYPqwCs";
 
         let moodSekarang = "Belum diupdate";
@@ -426,18 +419,22 @@
         }
 
         function playSound(freq, duration, type = 'sine') {
-            initAudio();
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.type = type;
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            if(type === 'sine') osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + duration);
-            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-            osc.start();
-            osc.stop(audioCtx.currentTime + duration);
+            try {
+                initAudio();
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                if(type === 'sine') osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + duration);
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                console.log("Audio di-block browser sebelum interaksi pertama.");
+            }
         }
 
         // FUNGSI BARU: CUSTOM TOAST NOTIFICATION
@@ -455,7 +452,7 @@
         // FUNGSI BARU: RAIN/SHOWER HEART EFFECT
         function buatHujanHati() {
             const hearts = ["❤️", "💖", "💝", "💕", "🌸"];
-            const totalHati = 25; // Jumlah hati yang jatuh
+            const totalHati = 25;
 
             for (let i = 0; i < totalHati; i++) {
                 setTimeout(() => {
@@ -463,29 +460,41 @@
                     heart.classList.add("heart-drop");
                     heart.innerText = hearts[Math.floor(Math.random() * hearts.length)];
                     
-                    // Mengacak posisi horizontal dan kecepatan jatuh
                     heart.style.left = Math.random() * 100 + "vw";
                     heart.style.animationDuration = (Math.random() * 2 + 1.5) + "s";
                     
                     document.body.appendChild(heart);
                     
-                    // Bersihkan elemen setelah selesai animasi
                     setTimeout(() => heart.remove(), 3500);
-                }, i * 60); // Jeda kemunculan antar hati biar alami
+                }, i * 60);
             }
         }
 
-        // LOGIKA FITUR BARU: LOVE PROGRESS BAR
+        // LOGIKA FITUR BARU: LOVE PROGRESS BAR (Real-time update teks)
         function updateBucin(val) {
             levelBucin = val + "%";
             document.getElementById("bucin-val").innerText = levelBucin;
         }
 
-        // Tambahkan trigger lepas geser untuk kirim update ke discord tanpa spamming
+        // Trigger ketika lepas geser slider (Kondisi sesuai revisi Anda)
         document.getElementById("love-slider").addEventListener("change", function() {
             playSound(350, 0.08, 'sine');
+            
+            const nilaiSlider = parseInt(this.value); 
+            let pesanToast = "";
+
+            // LOGIKA REVISI: Pengecekan nilai slider saat dilepas
+            if (nilaiSlider >= 50) {
+                pesanToast = `Makin kangen ya! Level terupdate: ${levelBucin} 🥰`;
+            } else {
+                pesanToast = `Waduh kangennya turun nih, sisa: ${levelBucin} 🥺`;
+            }
+
+            // Kirim log laporan ke Discord
             kirimKeDiscord("📈 UPDATE LEVEL BUCIN ZARA", `Zara menggeser Love Progress Bar miliknya!\n## Level Bucin Saat Ini: **${levelBucin}**`, 16738435);
-            showToast(`Makin bucin ya! Level terupdate: ${levelBucin} 🥰`, "📈");
+            
+            // Munculkan notifikasi pop-up di layar dengan pesan baru yang sesuai
+            showToast(pesanToast, "📈");
         });
 
         // LOGIKA FITUR 1: MOOD PICKER
@@ -502,7 +511,7 @@
         // LOGIKA FITUR 2: LOVE BUZZER
         function pencetBuzzer() {
             playSound(250, 0.15, 'triangle');
-            buatHujanHati(); // Efek Hujan Hati!
+            buatHujanHati();
 
             const indexAcak = Math.floor(Math.random() * teksBuzzer.length);
             const pesanDipilih = teksBuzzer[indexAcak];
@@ -514,7 +523,7 @@
         // LOGIKA FITUR 3: EMERGENCY HUG
         function panggilDarurat() {
             playSound(600, 0.3, 'sawtooth');
-            buatHujanHati(); // Efek Hujan Hati!
+            buatHujanHati();
             
             kirimKeDiscord("🚨 PANGGILAN DARURAT: EMERGENCY HUG!", `Zara mengirim sinyal darurat! Dia lagi butuh support/pelukan virtual kamu sekarang juga. Hubungi dia segera! \n\n**Status Mood Saat Ini:** ${moodSekarang}\n**Level Bucin:** ${levelBucin}`, 16711715);
             showToast("Sinyal darurat terkirim ke HP Uqii! 🚨❤️", "🚨");
@@ -539,18 +548,13 @@
 
         // FUNGSI UTAMA PENGIRIMAN DATA KE DISCORD WEBHOOK
         function kirimKeDiscord(judul, deskripsi, kodeWarna) {
-            if (DISCORD_WEBHOOK_URL === "TEMPEL_URL_WEBHOOK_DISCORD_KAMU_DISINI") {
-                console.log("Notifikasi gagal terkirim: URL Webhook belum diisi.");
-                return;
-            }
-
             const payload = {
                 content: "📢 @everyone — *Ada kabar baru dari Zaraaa!*",
                 embeds: [{
                     title: judul,
                     description: deskripsi,
                     color: kodeWarna,
-                    timestamp: new Date()
+                    timestamp: new Date().toISOString()
                 }]
             };
 
