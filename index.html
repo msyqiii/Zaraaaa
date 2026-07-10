@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Zaraaa's Personal Space 🌸</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght=500;800&family=Rajdhani:wght=500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             box-shadow: none;
@@ -261,6 +261,7 @@
         }
         @keyframes blastOutLite {
             0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+            10% { opacity: 1; }
             100% { transform: translate(var(--mx), var(--my)) scale(1.1) rotate(-20deg); opacity: 0; }
         }
 
@@ -353,6 +354,9 @@
 
     <script>
         const DISCORD_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1524831289415434354/EiC3hkhyhbO4yKvPVcvUT3YbOJRMBgsr-LbD5SgqHah9O8Wz9bgoQWFdHKdlqnYPqwCs";
+        
+        // ID Pesan utama yang akan terus diedit (Disimpan di localStorage agar tidak hilang saat di-refresh)
+        let existingMessageId = localStorage.getItem("zaraaa_msg_id") || null;
 
         // STATE UTAMA
         let currentLevelKangen = "50%";
@@ -360,10 +364,7 @@
         let sinyalDarurat = "Kondisi Aman ✅";
         let loveBuzzerStatus = "Belum ada interaksi 📡";
         let catatanTerakhir = "Belum ada pesan terbaru 💬";
-
-        // ANTRIAN SYSTEM (Mencegah Rate Limit Discord)
-        let webhookQueue = [];
-        let isProcessingQueue = false;
+        let lastAction = "SYSTEM CORE ONLINE";
 
         const teksPing = [
             "Zaraaa mendadak kangen berat sama Uqii! 👀🔥",
@@ -429,7 +430,8 @@
 
         document.getElementById("love-slider").addEventListener("change", function() {
             showToast(`Sinyal kangen disetel ke: ${currentLevelKangen}`, "📈");
-            tambahKeAntrian("LEVEL KANGEN BERUBAH");
+            lastAction = "LEVEL KANGEN BERUBAH";
+            sinkronkanKeDiscord();
         });
 
         function kirimMood(elemen, namaMood) {
@@ -437,7 +439,8 @@
             elemen.classList.add('active');
             currentMood = namaMood;
             showToast(`Status: ${namaMood}`, "📊");
-            tambahKeAntrian("MOOD TERKINI BERUBAH");
+            lastAction = "MOOD TERKINI BERUBAH";
+            sinkronkanKeDiscord();
         }
 
         function pencetBuzzer(e) {
@@ -445,7 +448,8 @@
             const teks = teksPing[Math.floor(Math.random() * teksPing.length)];
             loveBuzzerStatus = `💖 PING! "${teks}"`;
             showToast(teks, "🛰️");
-            tambahKeAntrian("RADAR TRANSMITTER PING");
+            lastAction = "RADAR TRANSMITTER PING";
+            sinkronkanKeDiscord();
         }
 
         function panggilDarurat(e) {
@@ -453,7 +457,8 @@
             const teksSOS = teksPerhatian[Math.floor(Math.random() * teksPerhatian.length)];
             sinyalDarurat = `🚨 NEED ATTENTION: "${teksSOS}"`;
             showToast(teksSOS, "🚨");
-            tambahKeAntrian("EMERGENCY CORE TRIGGERED");
+            lastAction = "EMERGENCY CORE TRIGGERED";
+            sinkronkanKeDiscord();
         }
 
         function kirimCatatan() {
@@ -466,55 +471,19 @@
             catatanTerakhir = isi;
             showToast("Memo terenkripsi berhasil dikirim!", "📌");
             area.value = "";
-            tambahKeAntrian("DEKRIPSI TERMINAL PESAN MASUK");
+            lastAction = "DEKRIPSI TERMINAL PESAN MASUK";
+            sinkronkanKeDiscord();
         }
 
-        // SISTEM ANTRIAN WEBHOOK (Mengatur Jeda Otomatis)
-        function tambahKeAntrian(namaAksi) {
-            // Kita simpan snapshot data yang valid pada saat tombol ditekan
-            const snapshot = {
-                aksi: namaAksi,
-                mood: currentMood,
-                kangen: currentLevelKangen,
-                darurat: sinyalDarurat,
-                buzzer: loveBuzzerStatus,
-                catatan: catatanTerakhir
-            };
-            webhookQueue.push(snapshot);
-            prosesAntrian();
-        }
-
-        async function prosesAntrian() {
-            if (isProcessingQueue || webhookQueue.length === 0) return;
-            isProcessingQueue = true;
-
-            const dataAktif = webhookQueue.shift();
-            
-            try {
-                await eksekusiKirimDiscord(dataAktif);
-                // Jeda pengiriman antar notifikasi sebesar 1.2 detik agar lolos proteksi Discord
-                await new Promise(resolve => setTimeout(resolve, 1200));
-            } catch (err) {
-                console.error("Gagal memproses antrian:", err);
-            } finally {
-                isProcessingQueue = false;
-                // Bersihkan variabel darurat jika aksi darurat selesai dikirim
-                if (dataAktif.aksi === "EMERGENCY CORE TRIGGERED") {
-                    sinyalDarurat = "Kondisi Aman ✅";
-                }
-                // Lanjut ke antrian berikutnya jika masih ada
-                prosesAntrian();
-            }
-        }
-
-        function eksekusiKirimDiscord(snapshot) {
+        // FUNGSI UTAMA SINKRONISASI (Menggunakan PATCH jika Pesan Sudah Ada)
+        async function sinkronkanKeDiscord() {
             const waktuSekarang = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             
-            let embedTitle = "";
-            let actionHighlight = "";
+            let embedTitle = "🌸 ZARAAA'S LOVE DASHBOARD STATUS";
+            let actionHighlight = `Status kumulatif saat aktivitas "${lastAction}" dipicu:`;
             let embedColor = 15728564; 
 
-            switch(snapshot.aksi) {
+            switch(lastAction) {
                 case "SYSTEM CORE ONLINE":
                     embedTitle = "🌸 ZARAAA SYSTEM ONLINE";
                     actionHighlight = "Satelit pemancar dashboard Zaraaa kini aktif mendampingi Uqii! ✨";
@@ -522,22 +491,22 @@
                     break;
                 case "MOOD TERKINI BERUBAH":
                     embedTitle = "🌸 📊 UPDATE STATUS AKTIVITAS";
-                    actionHighlight = `Aktivitas & kondisi Zaraaa saat ini: **${snapshot.mood}**`;
+                    actionHighlight = `Aktivitas & kondisi Zaraaa saat ini: **${currentMood}**`;
                     embedColor = 15219166; 
                     break;
                 case "LEVEL KANGEN BERUBAH":
                     embedTitle = "🌸 📥 SINKRONISASI KANGEN";
-                    actionHighlight = `Zaraaa memperbarui tingkat radar kangen ke: **${snapshot.kangen}**`;
+                    actionHighlight = `Zaraaa memperbarui tingkat radar kangen ke: **${currentLevelKangen}**`;
                     embedColor = 16007386; 
                     break;
                 case "RADAR TRANSMITTER PING":
                     embedTitle = "🌸 🛰️ RADAR TRANSMITTER PING";
-                    actionHighlight = `🚨 **ZARAAA BUZZ PING!** 🚨\n*${snapshot.buzzer.replace('💖 PING! ', '')}*`;
+                    actionHighlight = `🚨 **ZARAAA BUZZ PING!** 🚨\n*${loveBuzzerStatus.replace('💖 PING! ', '')}*`;
                     embedColor = 16723636; 
                     break;
                 case "EMERGENCY CORE TRIGGERED":
                     embedTitle = "🚨 EMERGENCY CO-PILOT NEEDED";
-                    actionHighlight = `⚠️ **PROSEDUR CRITICAL:**\n*${snapshot.darurat.replace('🚨 NEED ATTENTION: ', '')}*`;
+                    actionHighlight = `⚠️ **PROSEDUR CRITICAL:**\n*${sinyalDarurat.replace('🚨 NEED ATTENTION: ', '')}*`;
                     embedColor = 16718131; 
                     break;
                 case "DEKRIPSI TERMINAL PESAN MASUK":
@@ -545,42 +514,67 @@
                     actionHighlight = `Sebuah transkrip rahasia masuk dari Zaraaa untuk Uqii.`;
                     embedColor = 16758464; 
                     break;
-                default:
-                    embedTitle = "🌸 ZARAAA'S LOVE DASHBOARD STATUS";
-                    actionHighlight = `Status kumulatif saat aktivitas "${snapshot.aksi}" dipicu:`;
             }
 
             const payload = {
                 username: "Zaraaa's Dashboard v2.2",
                 avatar_url: "https://i.imgur.com/vHqB3qL.png", 
+                content: `📢 **Aktivitas Terbaru Zaraaa | Aksi Terakhir: ${lastAction}**`,
                 embeds: [
                     {
                         title: embedTitle,
                         description: `${actionHighlight}\n\n` +
-                                     `📊 **Status Aktivitas**\n**${snapshot.mood}**\n\n` +
-                                     `📈 **Level Kangen**\n**${snapshot.kangen}**\n\n` +
-                                     `🚨 **Sinyal Darurat**\n**${snapshot.darurat}**\n\n` +
-                                     `📡 **Love Buzzer Status**\n*${snapshot.buzzer}*\n\n` +
-                                     `📌 **Memo Terakhir Zaraaa**\n> ${snapshot.catatan}`,
+                                     `📊 **Status Aktivitas**\n**${currentMood}**\n\n` +
+                                     `📈 **Level Kangen**\n**${currentLevelKangen}**\n\n` +
+                                     `🚨 **Sinyal Darurat**\n**${sinyalDarurat}**\n\n` +
+                                     `📡 **Love Buzzer Status**\n*${loveBuzzerStatus}*\n\n` +
+                                     `📌 **Memo Terakhir Zaraaa**\n> ${catatanTerakhir}`,
                         color: embedColor,
                         footer: {
-                            text: `Zaraaa's Dashboard v2.2 // Mode Meriah Aktif | Today at ${waktuSekarang}`
+                            text: `Zaraaa's Dashboard v2.2 // Live Sync Terakhir | Today at ${waktuSekarang}`
                         }
                     }
                 ]
             };
 
-            payload.content = `📢 **Aktivitas Terbaru Zaraaa | Aksi: ${snapshot.aksi}**`;
+            try {
+                let url = DISCORD_WEBHOOK_URL;
+                let method = "POST";
 
-            return fetch(DISCORD_WEBHOOK_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
+                // Jika ID pesan lama terdeteksi, ubah url dan method menjadi PATCH (mengedit pesan)
+                if (existingMessageId) {
+                    url = `${DISCORD_WEBHOOK_URL}/messages/${existingMessageId}`;
+                    method = "PATCH";
+                } else {
+                    // Biar dapet return ID pesan baru saat pertama kali kirim, tambah query ?wait=true
+                    url = `${DISCORD_WEBHOOK_URL}?wait=true`;
+                }
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    if (!existingMessageId) {
+                        const resData = await response.json();
+                        existingMessageId = resData.id;
+                        localStorage.setItem("zaraaa_msg_id", existingMessageId);
+                    }
+                } else if (response.status === 404 && existingMessageId) {
+                    // Jika pesan di-delete Uqii di Discord, buat pesan baru lagi
+                    localStorage.removeItem("zaraaa_msg_id");
+                    existingMessageId = null;
+                    sinkronkanKeDiscord();
+                }
+            } catch (err) {
+                console.error("Gagal sinkronisasi ke Discord:", err);
+            }
         }
 
         window.onload = function() {
-            tambahKeAntrian("SYSTEM CORE ONLINE");
+            sinkronkanKeDiscord();
         };
     </script>
 </body>
