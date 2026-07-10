@@ -343,8 +343,8 @@
 
     <div class="dashboard">
         <div class="header">
-            <h1>Zara's Love Dashboard ✨</h1>
-            <p>Ruang interaksi rahasia Zara & Uqii</p>
+            <h1>Zaraaa's Love Dashboard ✨</h1>
+            <p>Zaraaa's secret interaction room</p>
         </div>
 
         <!-- FITUR 1: DAILY MOOD PICKER -->
@@ -369,12 +369,12 @@
         </div>
 
         <!-- BARU: CUSTOM LOVE PROGRESS BAR -->
-        <div class="section-title">📈 Level Bucin Zara Hari Ini</div>
+        <div class="section-title">📈 Level Kangen Zaraaa Hari Ini</div>
         <div class="bucin-wrapper">
             <div class="bucin-header">
-                <span>Kangen Biasa saja</span>
+                <span>Biasa saja</span>
                 <span id="bucin-val" style="color: #ff6b81; font-size: 0.9rem;">50%</span>
-                <span>Kangen Kuadrat ❤️</span>
+                <span>Kangen Bangett ❤️</span>
             </div>
             <div class="slider-container">
                 <input type="range" min="0" max="100" value="50" class="bucin-slider" id="love-slider" oninput="updateBucin(this.value)">
@@ -545,7 +545,7 @@
             }
 
             const payload = {
-                content: "📢 @everyone — *Ada kabar baru dari Zara!*",
+                content: "📢 @everyone — *Ada kabar baru dari Zaraaa!*",
                 embeds: [{
                     title: judul,
                     description: deskripsi,
