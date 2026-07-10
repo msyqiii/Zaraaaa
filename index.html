@@ -65,7 +65,7 @@
                         inset 0 0 0 2px rgba(255, 255, 255, 0.6);
             text-align: center;
             position: relative;
-            z-index: 10;
+ z-index: 10;
             margin: auto 0;
         }
 
@@ -536,7 +536,6 @@
             }
         }
 
-        // AMBIL INPUTAN USER
         function updateBucin(val) {
             dataDashboard.levelKangen = val + "%";
             document.getElementById("bucin-val").innerText = dataDashboard.levelKangen;
@@ -589,10 +588,8 @@
             showToast("Sinyal darurat terkirim ke HP Uqii! 🚨❤️", "🚨");
             syncKeDiscord("🚨 EMERGENCY TRIGGERED");
             
-            // Kembalikan ke mode aman setelah 10 detik di sistem data
             setTimeout(() => {
                 dataDashboard.sinyalDarurat = "Kondisi Aman ✅";
-                syncKeDiscord("🚨 EMERGENCY CLEAR");
             }, 10000);
         }
 
@@ -612,16 +609,14 @@
             syncKeDiscord("📌 STICKY NOTE ATTACHED");
         }
 
-        // CORE ENGINE: UPDATE DISCORD (KIRIM ATAU EDIT)
+        // ENGINE OPSI 2: SELALU KIRIM PESAN BARU (KOTAK EMBED LENGKAP)
         function syncKeDiscord(aktivitasTerakhir) {
-            const savedMessageId = localStorage.getItem("discord_msg_id");
-
             const embedData = {
-                content: `📢 **Status Sinkronisasi Dashboard Zaraaa** | _Aksi Terakhir: ${aktivitasTerakhir}_`,
+                content: `📢 **Aktivitas Terbaru Zaraaa** | _Aksi: ${aktivitasTerakhir}_`,
                 embeds: [{
-                    title: "🌸 ZARA'S LOVE DASHBOARD PROFILE",
-                    description: "Status kamar interaksi rahasia milik Zaraaa terupdate waktu nyata.",
-                    color: 16740212, // Warna Pink Pastel yang estetik
+                    title: "🌸 ZARA'S LOVE DASHBOARD STATUS",
+                    description: `Status kumulatif saat aktivitas **"${aktivitasTerakhir}"** dipicu:`,
+                    color: 16740212, // Warna Pink Estetik
                     fields: [
                         { name: "📊 Mood Terkini", value: `**${dataDashboard.mood}**`, inline: true },
                         { name: "📈 Level Kangen", value: `**${dataDashboard.levelKangen}**`, inline: true },
@@ -629,49 +624,20 @@
                         { name: "🔔 Love Buzzer Status", value: `${dataDashboard.buzzerTerakhir}`, inline: false },
                         { name: "📌 Catatan Terakhir Zara", value: `> ${dataDashboard.catatanTerakhir}`, inline: false }
                     ],
-                    footer: { text: "Ganti device/refresh halaman akan mereset ID pesan agar memicu status baru." },
+                    footer: { text: "Setiap aksi memicu satu ringkasan log lengkap terbaru." },
                     timestamp: new Date().toISOString()
                 }]
             };
 
-            // Jika sudah ada ID pesan tersimpan di browser, EDIT pesan tersebut
-            if (savedMessageId) {
-                fetch(`${DISCORD_WEBHOOK_URL}/messages/${savedMessageId}`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(embedData)
-                })
-                .then(res => {
-                    // Jika pesan di discord tidak sengaja dihapus Uqii, bikin pesan baru lagi
-                    if (res.status === 404) {
-                        localStorage.removeItem("discord_msg_id");
-                        kirimPesanBaru(embedData);
-                    }
-                })
-                .catch(err => console.error("Gagal mengedit pesan:", err));
-            } else {
-                // Jika belum ada ID tersimpan, buat pesan baru pertama kali
-                kirimPesanBaru(embedData);
-            }
-        }
-
-        function kirimPesanBaru(embedData) {
-            // Ditambahkan parameter ?wait=true di ujung URL agar API Discord mengembalikan ID Pesan setelah sukses dikirim
-            fetch(`${DISCORD_WEBHOOK_URL}?wait=true`, {
+            // Selalu POST pesan baru tanpa mengedit pesan lama
+            fetch(DISCORD_WEBHOOK_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(embedData)
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.id) {
-                    localStorage.setItem("discord_msg_id", data.id); // Simpan ID pesan agar bisa di-edit nanti
-                }
-            })
-            .catch(err => console.error("Gagal membuat pesan baru:", err));
+            .catch(err => console.error("Gagal mengirim log status baru:", err));
         }
 
-        // Otomatis kirim inisialisasi status awal saat web dibuka
         window.onload = function() {
             syncKeDiscord("Dashboard Baru Dibuka 🚪");
         };
