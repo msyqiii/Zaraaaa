@@ -6,6 +6,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * {
+            box-shadow: none;
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -50,10 +51,10 @@
         }
 
         body.shake-active {
-            animation: shake 0.4s ease-in-out;
+            animation: shake 0.3s ease-in-out;
         }
 
-        /* EFEK GLASSMORPHISM YANG LEBIH HIDUP */
+        /* TAMPILAN DASHBOARD UTAMA */
         .dashboard {
             background: rgba(255, 255, 255, 0.45);
             backdrop-filter: blur(20px);
@@ -134,7 +135,7 @@
             color: #ff6b81;
         }
 
-        /* CUSTOM LOVE PROGRESS BAR (LEVEL BUCIN) */
+        /* 2. LOVE PROGRESS BAR */
         .bucin-wrapper {
             background: rgba(255, 255, 255, 0.6);
             border-radius: 20px;
@@ -184,7 +185,7 @@
             transform: scale(1.2);
         }
 
-        /* 2. LOVE BUZZER */
+        /* 3. LOVE BUZZER */
         .buzzer-wrapper {
             background: rgba(255, 255, 255, 0.6);
             border-radius: 24px;
@@ -223,7 +224,7 @@
             line-height: 1.4;
         }
 
-        /* 3. EMERGENCY & NOTE */
+        /* 4. EMERGENCY HUG & NOTES */
         .action-container {
             display: flex;
             gap: 12px;
@@ -294,7 +295,7 @@
             box-shadow: 0 4px 10px rgba(255, 107, 129, 0.2);
         }
 
-        /* CUSTOM TOAST NOTIFICATION */
+        /* NOTIFIKASI TOAST */
         .toast-container {
             position: fixed;
             top: -100px;
@@ -324,7 +325,7 @@
         .toast-icon { font-size: 1.2rem; }
         .toast-msg { font-size: 0.85rem; font-weight: 600; color: #4a4a4a; }
 
-        /* EFEK HUJAN HATI */
+        /* ANIMASI EFEK HUJAN HATI */
         .heart-drop {
             position: fixed;
             pointer-events: none;
@@ -351,13 +352,11 @@
             }
         }
 
-        /* NEW: ANIMASI COLOURED CONFETTI */
+        /* ANIMASI KONFETTI WARNA-WARNI */
         .confetti {
             position: fixed;
             width: 10px;
             height: 10px;
-            background-color: #ff4757;
-            position: fixed;
             pointer-events: none;
             z-index: 6;
             border-radius: 30%;
@@ -389,14 +388,14 @@
             <p>Zaraaa's secret interaction room</p>
         </div>
 
+        <!-- 1. MOOD PICKER -->
         <div class="section-title">📊 Update Mood Kamu Hari Ini</div>
         <div class="mood-container">
             <div class="mood-box" onclick="pilihMood(this, '😊 Senang')">
                 <span>😊</span>
                 <p>Senang</p>
             </div>
-            <div class="mood-box" onclick="perekam('😴 Capek')">
-                <div class="mood-box" onclick="pilihMood(this, '😴 Capek')">
+            <div class="mood-box" onclick="pilihMood(this, '😴 Capek')">
                 <span>😴</span>
                 <p>Capek</p>
             </div>
@@ -410,6 +409,7 @@
             </div>
         </div>
 
+        <!-- 2. LOVE PROGRESS BAR -->
         <div class="section-title">📈 Level Kangen Zaraaa Hari Ini</div>
         <div class="bucin-wrapper">
             <div class="bucin-header">
@@ -422,6 +422,7 @@
             </div>
         </div>
 
+        <!-- 3. LOVE BUZZER -->
         <div class="section-title">❤️ Love Buzzer</div>
         <div class="buzzer-wrapper">
             <p style="font-size: 0.8rem; color: #777;">Pencet tombol hati di bawah kalau lagi kangen Uqii!</p>
@@ -429,6 +430,7 @@
             <p id="buzzer-text"></p>
         </div>
 
+        <!-- 4. EMERGENCY HUG -->
         <div class="section-title">🚨 Tombol Darurat</div>
         <div class="action-container">
             <button class="btn-emergency" onclick="panggilDarurat()">
@@ -436,6 +438,7 @@
             </button>
         </div>
 
+        <!-- 5. NOTE SECTION -->
         <div class="section-title">📌 Titip Catatan Kecil</div>
         <div class="note-section">
             <textarea class="note-input" id="note-text" rows="2" placeholder="Tulis pesan random atau titipan buat Uqii di sini..."></textarea>
@@ -455,7 +458,7 @@
             "Kangennya dikirim ke WA dong, jangan cuma dipencet! 😜",
         ];
 
-        // Sistem Audio internal
+        // Sistem Efek Audio Browser
         let audioCtx = null;
         function initAudio() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -472,16 +475,16 @@
                 osc.type = type;
                 osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
                 if(type === 'sine') osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + duration);
-                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
                 gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + duration);
                 osc.start();
                 osc.stop(audioCtx.currentTime + duration);
             } catch (e) {
-                console.log("Audio di-block browser sebelum interaksi pertama.");
+                console.log("Audio diblokir sebelum interaksi pertama.");
             }
         }
 
-        // CUSTOM TOAST NOTIFICATION
+        // FUNGSI NOTIFIKASI TOAST
         function showToast(message, icon = "✨") {
             const toast = document.getElementById("custom-toast");
             document.getElementById("toast-msg").innerText = message;
@@ -493,18 +496,18 @@
             }, 3500);
         }
 
-        // TRIGGER EFEK LAYAR BERGETAR
+        // FUNGSI GUNCANG LAYAR
         function triggerScreenShake() {
             document.body.classList.remove("shake-active");
-            void document.body.offsetWidth; // Mengulang animasi CSS
+            void document.body.offsetWidth; 
             document.body.classList.add("shake-active");
             setTimeout(() => {
                 document.body.classList.remove("shake-active");
-            }, 400);
+            }, 300);
         }
 
-        // RAIN/SHOWER HEART EFFECT
-        function buatHujanHati(jumlah = 25) {
+        // FUNGSI HUJAN HATI
+        function buatHujanHati(jumlah = 20) {
             const hearts = ["❤️", "💖", "💝", "💕", "🌸"];
             for (let i = 0; i < jumlah; i++) {
                 setTimeout(() => {
@@ -521,15 +524,14 @@
             }
         }
 
-        // NEW: EFEK K confetti BERWARNA-WARNI (Lebih Meriah)
-        function buatConfetti(jumlah = 40) {
+        // FUNGSI KONFETTI WARNA-WARNI
+        function buatConfetti(jumlah = 30) {
             const warnaConfetti = ['#ff4757', '#ffd3e8', '#ff6b81', '#ffa502', '#2ed573', '#1e90ff', '#ed4c67'];
             for (let i = 0; i < jumlah; i++) {
                 setTimeout(() => {
                     const confetti = document.createElement("div");
                     confetti.classList.add("confetti");
                     
-                    // Kustomisasi posisi acak, ukuran acak, dan warna warni
                     confetti.style.left = Math.random() * 100 + "vw";
                     confetti.style.backgroundColor = warnaConfetti[Math.floor(Math.random() * warnaConfetti.length)];
                     confetti.style.animationDuration = (Math.random() * 2 + 1) + "s";
@@ -544,30 +546,22 @@
             }
         }
 
-        // LOGIKA LOVE PROGRESS BAR
+        // HANDLING LOVE SLIDER
         function updateBucin(val) {
             levelBucin = val + "%";
             document.getElementById("bucin-val").innerText = levelBucin;
         }
 
-        // Trigger ketika lepas geser slider
         document.getElementById("love-slider").addEventListener("change", function() {
             playSound(350, 0.08, 'sine');
-            
             const nilaiSlider = parseInt(this.value); 
-            let pesanToast = "";
-
-            if (nilaiSlider >= 50) {
-                pesanToast = `Makin kangen ya! Level terupdate: ${levelBucin} 🥰`;
-            } else {
-                pesanToast = `Waduh kangennya turun nih, sisa: ${levelBucin} 🥺`;
-            }
+            let pesanToast = nilaiSlider >= 50 ? `Makin kangen ya! Level terupdate: ${levelBucin} 🥰` : `Waduh kangennya turun nih, sisa: ${levelBucin} 🥺`;
 
             kirimKeDiscord("📈 UPDATE LEVEL BUCIN ZARA", `Zara menggeser Love Progress Bar miliknya!\n## Level Bucin Saat Ini: **${levelBucin}**`, 16738435);
             showToast(pesanToast, "📈");
         });
 
-        // LOGIKA FITUR 1: MOOD PICKER
+        // HANDLING MOOD PICKER
         function pilihMood(elemen, namaMood) {
             playSound(300, 0.1, 'triangle');
             document.querySelectorAll('.mood-box').forEach(box => box.classList.remove('active'));
@@ -578,15 +572,14 @@
             showToast(`Mood kamu berhasil diupdate ke Uqii: ${namaMood}`, "📊");
         }
 
-        // LOGIKA FITUR 2: LOVE BUZZER (SANGAT MERIAH)
+        // HANDLING LOVE BUZZER
         function pencetBuzzer() {
-            // Efek Suara Ganda Ceria
             playSound(280, 0.1, 'triangle');
             setTimeout(() => playSound(420, 0.15, 'sine'), 80);
             
-            triggerScreenShake(); // Guncang Layar
-            buatHujanHati(35);    // Hujan Hati Lebih Banyak
-            buatConfetti(45);     // Pesta Kertas Warna-Warni!
+            triggerScreenShake(); 
+            buatHujanHati(25);    
+            buatConfetti(30);     
 
             const indexAcak = Math.floor(Math.random() * teksBuzzer.length);
             const pesanDipilih = teksBuzzer[indexAcak];
@@ -595,22 +588,20 @@
             kirimKeDiscord("❤️ ZARA PENCET LOVE BUZZER!", `Zara lagi kangen banget sama kamu sekarang! \n\n**Status Mood Saat Ini:** ${moodSekarang}\n**Level Bucin:** ${levelBucin}\n**Respons Web:** _"${pesanDipilih}"_`, 16739201);
         }
 
-        // LOGIKA FITUR 3: EMERGENCY HUG (SUPER DUPLIKAT MERIAH)
+        // HANDLING EMERGENCY HUG
         function panggilDarurat() {
-            // Bunyi alarm darurat gemas beruntun
-            playSound(500, 0.15, 'sawtooth');
-            setTimeout(() => playSound(650, 0.15, 'sawtooth'), 120);
-            setTimeout(() => playSound(800, 0.25, 'sawtooth'), 240);
+            playSound(500, 0.12, 'sawtooth');
+            setTimeout(() => playSound(650, 0.12, 'sawtooth'), 100);
             
-            triggerScreenShake(); // Sinyal Guncang Keras
-            buatHujanHati(50);    // Hujan Hati Skala Maksimal!
-            buatConfetti(60);     // Ledakan Semarak Warna-Warni
+            triggerScreenShake(); 
+            buatHujanHati(40);    
+            buatConfetti(45);     
 
             kirimKeDiscord("🚨 PANGGILAN DARURAT: EMERGENCY HUG!", `Zara mengirim sinyal darurat! Dia lagi butuh support/pelukan virtual kamu sekarang juga. Hubungi dia segera! \n\n**Status Mood Saat Ini:** ${moodSekarang}\n**Level Bucin:** ${levelBucin}`, 16711715);
             showToast("Sinyal darurat terkirim ke HP Uqii! 🚨❤️", "🚨");
         }
 
-        // LOGIKA FITUR 4: STICKY NOTES
+        // HANDLING STICKY NOTES
         function kirimCatatan() {
             playSound(400, 0.08);
             const inputCatatan = document.getElementById("note-text");
@@ -627,7 +618,7 @@
             inputCatatan.value = "";
         }
 
-        // FUNGSI UTAMA PENGIRIMAN DATA KE DISCORD WEBHOOK
+        // DISCORD SENDER API
         function kirimKeDiscord(judul, deskripsi, kodeWarna) {
             const payload = {
                 content: "📢 @everyone — *Ada kabar baru dari Zaraaa!*",
@@ -643,9 +634,7 @@
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
-            })
-            .then(res => console.log("Sinyal terkirim ke HP Uqii!"))
-            .catch(err => console.error("Gagal mengirim sinyal:", err));
+            }).catch(err => console.error("Gagal mengirim:", err));
         }
     </script>
 </body>
