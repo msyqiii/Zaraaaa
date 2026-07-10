@@ -28,10 +28,11 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
-            padding: 15px;
+            align-items: flex-start; /* Mengubah center ke flex-start agar saat scroll di laptop tidak terpotong atasnya */
+            padding: 40px 15px; /* Menambah padding atas bawah agar manis saat di-scroll */
             color: #4a4a4a;
             overflow-x: hidden;
+            overflow-y: auto; /* Memastikan scrollbar vertikal aktif jika konten melebihi layar */
             position: relative;
         }
 
@@ -68,6 +69,7 @@
             text-align: center;
             position: relative;
             z-index: 10;
+            margin: auto 0; /* Otomatis membuat posisi vertikalnya seimbang di laptop */
         }
 
         .header h1 {
@@ -388,7 +390,6 @@
             <p>Zaraaa's secret interaction room</p>
         </div>
 
-        <!-- 1. MOOD PICKER -->
         <div class="section-title">📊 Update Mood Kamu Hari Ini</div>
         <div class="mood-container">
             <div class="mood-box" onclick="pilihMood(this, '😊 Senang')">
@@ -409,7 +410,6 @@
             </div>
         </div>
 
-        <!-- 2. LOVE PROGRESS BAR -->
         <div class="section-title">📈 Level Kangen Zaraaa Hari Ini</div>
         <div class="bucin-wrapper">
             <div class="bucin-header">
@@ -422,7 +422,6 @@
             </div>
         </div>
 
-        <!-- 3. LOVE BUZZER -->
         <div class="section-title">❤️ Love Buzzer</div>
         <div class="buzzer-wrapper">
             <p style="font-size: 0.8rem; color: #777;">Pencet tombol hati di bawah kalau lagi kangen Uqii!</p>
@@ -430,7 +429,6 @@
             <p id="buzzer-text"></p>
         </div>
 
-        <!-- 4. EMERGENCY HUG -->
         <div class="section-title">🚨 Tombol Darurat</div>
         <div class="action-container">
             <button class="btn-emergency" onclick="panggilDarurat()">
@@ -438,7 +436,6 @@
             </button>
         </div>
 
-        <!-- 5. NOTE SECTION -->
         <div class="section-title">📌 Titip Catatan Kecil</div>
         <div class="note-section">
             <textarea class="note-input" id="note-text" rows="2" placeholder="Tulis pesan random atau titipan buat Uqii di sini..."></textarea>
