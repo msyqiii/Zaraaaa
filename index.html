@@ -247,7 +247,7 @@
         }
         @keyframes blastOutLite {
             0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
-            100% { transform: translate(var(--mx), var(--my)) scale(1.1) opacity: 0; }
+            100% { transform: translate(var(--mx), var(--my)) scale(1.1); opacity: 0; }
         }
 
         .toast-container {
@@ -352,13 +352,11 @@
 
         // STATE UTAMA
         let currentLevelKangen = "50%";
-        let currentMood = "Belum diatur 📋";
-        let statusGedeAtas = "✨ DASHBOARD ONLINE"; 
-        let deskripsiGedeAtas = "\"Papan kontrol interaktif siap digunakan, Co-Pilot!\"";
+        let currentMood = "Belum Diatur 📋";
         let sinyalDarurat = "Kondisi Aman ✅";
         let loveBuzzerStatus = "Belum ada interaksi terbaru 📡";
         let catatanTerakhir = "Belum ada pesan terbaru 💬";
-        let lastAction = "INITIALIZED";
+        let lastAction = "DASHBOARD REALTIME ONLINE";
 
         const teksPing = [
             "Zaraaa mendadak kangen berat sama Uqii! 👀🔥",
@@ -368,7 +366,6 @@
 
         const teksPerhatian = [
             "Mode manja aktif total, Uqii sibuk ngga yaaa? 👀🎀",
-            "Zaraaa lagi butuh perhatian lebih/pukpuk secepatnya! 🥺💝",
             "SOS! Asupan manja Zaraaa menipis, Uqii dimohon merapat! 🚨🧸"
         ];
 
@@ -416,8 +413,6 @@
 
         document.getElementById("love-slider").addEventListener("change", function() {
             showToast(`Kangen disetel: ${currentLevelKangen}`, "📈");
-            statusGedeAtas = "📈 TELEMETRI KANGEN DIUPDATE";
-            deskripsiGedeAtas = `"Sinyal kangen bergeser ke angka keramat ${currentLevelKangen}! 🔥"`;
             lastAction = "LEVEL KANGEN BERUBAH";
             sinkronkanKeDiscord();
         });
@@ -427,9 +422,7 @@
             elemen.classList.add('active');
             currentMood = namaMood;
             showToast(`Status: ${namaMood}`, "📊");
-            statusGedeAtas = "📊 STATUS AKTIVITAS TERBARU";
-            deskripsiGedeAtas = `"Zaraaa baru saja mengubah status aktivitasnya menjadi: ${namaMood}."`;
-            lastAction = "STATUS AKTIVITAS UPDATE";
+            lastAction = "MOOD TERKINI BERUBAH";
             sinkronkanKeDiscord();
         }
 
@@ -437,8 +430,6 @@
             buatLedakanPartikel(e.clientX, e.clientY, 5);
             const teks = teksPing[Math.floor(Math.random() * teksPing.length)];
             loveBuzzerStatus = `💖 PING! "${teks}"`;
-            statusGedeAtas = "💖 LOVE BUZZER TRANSMITTER";
-            deskripsiGedeAtas = `"${teks}"`;
             showToast("Ping Terkirim!", "🛰️");
             lastAction = "RADAR TRANSMITTER PING";
             sinkronkanKeDiscord();
@@ -448,8 +439,6 @@
             buatLedakanPartikel(e.clientX, e.clientY, 8);
             const teksSOS = teksPerhatian[Math.floor(Math.random() * teksPerhatian.length)];
             sinyalDarurat = `🚨 NEED ATTENTION: "${teksSOS}"`;
-            statusGedeAtas = "🚨 EMERGENCY CO-PILOT NEEDED";
-            deskripsiGedeAtas = `⚠️ **PROSEDUR CRITICAL:**\n*"${teksSOS}"*`;
             showToast("SOS Diaktifkan!", "🚨");
             lastAction = "EMERGENCY CORE TRIGGERED";
             sinkronkanKeDiscord();
@@ -460,37 +449,44 @@
             const isi = area.value.trim();
             if(!isi) return;
             catatanTerakhir = isi;
-            statusGedeAtas = "💬 MEMO TERBARU DITERIMA";
-            deskripsiGedeAtas = `"Ada pesan rahasia masuk dari Zaraaa di papan memo!"`;
             showToast("Memo Terkirim!", "📌");
             area.value = "";
             lastAction = "PESAN LIVE MASUK";
             sinkronkanKeDiscord();
         }
 
-        // FORMAT EMBED TATA LETAK MENYATU SESUAI GAMBAR CONTOH
+        // ABSOLUTE SINGLE-MESSAGE LIFETIME SYNC ENGINE
         async function sinkronkanKeDiscord() {
             const sekarang = new Date();
-            const waktuUpdate = sekarang.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            const jamMenit = String(sekarang.getHours()).padStart(2, '0') + "." + String(sekarang.getMinutes()).padStart(2, '0');
             
+            // Ekstrak teks kutipan dari status darurat untuk dipasang di bawah judul utama
+            let subQuote = "";
+            if (sinyalDarurat.includes('"')) {
+                subQuote = `\n${sinyalDarurat.substring(sinyalDarurat.indexOf('"'))}`;
+            } else {
+                subQuote = `\n*"Tidak ada status darurat aktif"*`;
+            }
+
             let existingMessageId = localStorage.getItem("zaraaa_permanent_msg_id") || null;
 
+            // STRUKTUR PAYLOAD MENGIKUTI HAMPIR 100% GAMBAR TAMPILAN
             const payload = {
                 username: "Zaraaa's Dashboard v2.2",
                 avatar_url: "https://i.imgur.com/vHqB3qL.png",
                 content: `📢 **Aktivitas Terbaru Zaraaa | Aksi Terakhir: ${lastAction}**`,
                 embeds: [
                     {
-                        title: statusGedeAtas,
-                        description: `${deskripsiGedeAtas}\n\n` +
+                        title: "🚨 EMERGENCY CO-PILOT NEEDED",
+                        description: `⚠️ **PROSEDUR CRITICAL:**${subQuote}\n\n` +
                                      `📊 **Status Aktivitas**\n${currentMood}\n\n` +
                                      `📈 **Level Kangen**\n**${currentLevelKangen}**\n\n` +
                                      `🚨 **Sinyal Darurat**\n${sinyalDarurat}\n\n` +
-                                     `📡 **Love Buzzer Status**\n${loveBuzzerStatus}\n\n` +
+                                     `🛰️ **Love Buzzer Status**\n${loveBuzzerStatus}\n\n` +
                                      `📌 **Memo Terakhir Zaraaa**\n> ${catatanTerakhir}`,
-                        color: 15939454, // Warna merah pink premium sesuai screenshot
+                        color: 15729726, // Warna merah tegas di sisi kiri embed (Hex #F0033E -> Desimal 15729726)
                         footer: {
-                            text: `Zaraaa's Dashboard v2.2 // Live Sync Terakhir | Today at ${waktuUpdate}`
+                            text: `Zaraaa's Dashboard v2.2 // Live Sync Terakhir | Today at ${jamMenit}`
                         }
                     }
                 ]
