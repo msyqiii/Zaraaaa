@@ -364,14 +364,9 @@
     <script>
         const DISCORD_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1524831289415434354/EiC3hkhyhbO4yKvPVcvUT3YbOJRMBgsr-LbD5SgqHah9O8Wz9bgoQWFdHKdlqnYPqwCs";
         
-        let existingMessageId = localStorage.getItem("zaraaa_msg_id") || null;
-
-        // STATE UTAMA
-        let currentLevelKangen = "50%";
+        // SEKARANG BERSIFAT REAL-TIME BERDERET (TIDAK MENGGUNAKAN ID PESAN LAMA)
+        let currentLevelKangen = "50% 📉";
         let currentMood = "Belum Diatur 📋";
-        let sinyalDarurat = "Kondisi Aman ✅";
-        let loveBuzzerStatus = "Belum ada interaksi 📡";
-        let catatanTerakhir = "Belum ada pesan terbaru 💬";
         let lastAction = "SYSTEM CORE ONLINE";
 
         const teksPing = [
@@ -391,7 +386,6 @@
         // ENGINE SOUND EFED - WEB AUDIO API
         function mainkanSuaraLucu(tipe) {
             try {
-                // Inisialisasi Audio Context
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (!AudioContext) return;
                 const ctx = new AudioContext();
@@ -431,7 +425,7 @@
                     osc.stop(sekarang + 0.45);
                 }
             } catch (e) {
-                console.log("Audio ditolak browser sebelum ada interaksi pertama.");
+                console.log("Audio ditolak sebelum interaksi.");
             }
         }
 
@@ -479,14 +473,19 @@
         }
 
         function updateBucin(val) {
-            currentLevelKangen = val + "%";
-            document.getElementById("bucin-val").innerText = currentLevelKangen;
+            let statusIcon = "📉 Mengalir Santai";
+            if(val > 35) statusIcon = "📈 Mulai Terasa";
+            if(val > 70) statusIcon = "🔥 Kangen Berat!";
+            if(val >= 95) statusIcon = "💖 EXPLODE KANGENNYA!";
+            
+            currentLevelKangen = val + "% (" + statusIcon + ")";
+            document.getElementById("bucin-val").innerText = val + "%";
         }
 
         document.getElementById("love-slider").addEventListener("change", function() {
             showToast(`Sinyal kangen disetel ke: ${currentLevelKangen}`, "📈");
             lastAction = "LEVEL KANGEN BERUBAH";
-            sinkronkanKeDiscord();
+            kirimKeDiscordBaru();
         });
 
         function kirimMood(elemen, namaMood) {
@@ -495,27 +494,25 @@
             currentMood = namaMood;
             showToast(`Status: ${namaMood}`, "📊");
             lastAction = "MOOD TERKINI BERUBAH";
-            sinkronkanKeDiscord();
+            kirimKeDiscordBaru();
         }
 
         function pencetBuzzer(e) {
             mainkanSuaraLucu('boing'); 
             buatLedakanPartikel(e.clientX, e.clientY, 5); 
             const teks = teksPing[Math.floor(Math.random() * teksPing.length)];
-            loveBuzzerStatus = `💖 PING! "${teks}"`;
             showToast(teks, "🛰️");
             lastAction = "RADAR TRANSMITTER PING";
-            sinkronkanKeDiscord();
+            kirimKeDiscordBaru(teks);
         }
 
         function panggilDarurat(e) {
             mainkanSuaraLucu('alarm'); 
             buatLedakanPartikel(e.clientX, e.clientY, 10); 
             const teksSOS = teksPerhatian[Math.floor(Math.random() * teksPerhatian.length)];
-            sinyalDarurat = `🚨 NEED ATTENTION: "${teksSOS}"`;
             showToast(teksSOS, "🚨");
             lastAction = "EMERGENCY CORE TRIGGERED";
-            sinkronkanKeDiscord();
+            kirimKeDiscordBaru(teksSOS);
         }
 
         function kirimCatatan() {
@@ -525,121 +522,84 @@
                 showToast("Pesan tidak boleh kosong!", "⚠️");
                 return;
             }
-            catatanTerakhir = isi;
             showToast("Memo terenkripsi berhasil dikirim!", "📌");
             area.value = "";
             lastAction = "DEKRIPSI TERMINAL PESAN MASUK";
-            sinkronkanKeDiscord();
+            kirimKeDiscordBaru(isi);
         }
 
-        // SINKRONISASI DISCORD
-        async function sinkronkanKeDiscord() {
+        // FUNGSI INI AKAN SELALU MEMBUAT NOTIFIKASI BARU (POST)
+        async function kirimKeDiscordBaru(pesanSpesifik = null) {
             const waktuSekarang = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             
-            let embedTitle = "🌸 ZARAAA'S LOVE DASHBOARD STATUS";
-            let actionHighlight = `Status kumulatif saat aktivitas "${lastAction}" dipicu:`;
+            let embedTitle = "🌸 ZARAAA'S LOVE DASHBOARD";
             let embedColor = 15728564; 
+            let deskripsiKontent = "";
 
+            // Menyesuaikan tampilan berdasarkan tombol apa yang ditekan Zaraaa
             switch(lastAction) {
                 case "SYSTEM CORE ONLINE":
-                    embedTitle = "🌸 ZARAAA SYSTEM ONLINE";
-                    actionHighlight = "Satelit pemancar dashboard Zaraaa kini aktif mendampingi Uqii! ✨";
+                    embedTitle = "🌸 SYSTEM ONLINE";
+                    deskripsiKontent = "✨ Satelit pemancar dashboard Zaraaa kini aktif mendampingi Uqii!";
                     embedColor = 16742314; 
                     break;
                 case "MOOD TERKINI BERUBAH":
-                    embedTitle = "🌸 📊 UPDATE STATUS AKTIVITAS";
-                    actionHighlight = `Aktivitas & kondisi Zaraaa saat ini: **${currentMood}**`;
+                    embedTitle = "📊 UPDATE STATUS AKTIVITAS ZARAAA";
+                    deskripsiKontent = `Zaraaa mengubah statusnya menjadi:\n✨ **${currentMood}**`;
                     embedColor = 15219166; 
                     break;
                 case "LEVEL KANGEN BERUBAH":
-                    embedTitle = "🌸 📥 SINKRONISASI KANGEN";
-                    actionHighlight = `Zaraaa memperbarui tingkat radar kangen ke: **${currentLevelKangen}**`;
+                    embedTitle = "📈 SINYAL LEVEL KANGEN BERUBAH";
+                    deskripsiKontent = `Zaraaa memperbarui tingkat radar kangen:\n💟 **${currentLevelKangen}**`;
                     embedColor = 16007386; 
                     break;
                 case "RADAR TRANSMITTER PING":
-                    embedTitle = "🌸 🛰️ RADAR TRANSMITTER PING";
-                    actionHighlight = `🚨 **ZARAAA BUZZ PING!** 🚨\n*${loveBuzzerStatus.replace('💖 PING! ', '')}*`;
+                    embedTitle = "🛰️ ZARAAA BUZZ PING!";
+                    deskripsiKontent = `📢 **Pesan Masuk:**\n*"${pesanSpesifik}"*`;
                     embedColor = 16723636; 
                     break;
                 case "EMERGENCY CORE TRIGGERED":
-                    embedTitle = "🚨 EMERGENCY CO-PILOT NEEDED";
-                    actionHighlight = `⚠️ **PROSEDUR CRITICAL:**\n*${sinyalDarurat.replace('🚨 NEED ATTENTION: ', '')}*`;
+                    embedTitle = "🚨 EMERGENCY: BUTUH PERHATIAN CO-PILOT";
+                    deskripsiKontent = `⚠️ **Kondisi Kritis:**\n*"${pesanSpesifik}"*`;
                     embedColor = 16718131; 
                     break;
                 case "DEKRIPSI TERMINAL PESAN MASUK":
-                    embedTitle = "💬 DEKRIPSI TERMINAL PESAN MASUK";
-                    actionHighlight = `Sebuah transkrip rahasia masuk dari Zaraaa untuk Uqii.`;
+                    embedTitle = "💬 MEMO TERMINAL DARI ZARAAA";
+                    deskripsiKontent = `📌 **Isi Pesan/Memo:**\n> ${pesanSpesifik}`;
                     embedColor = 16758464; 
                     break;
             }
 
             const payload = {
-                username: "Zaraaa's Dashboard v2.2",
+                username: "Zaraaa's Active Logger",
                 avatar_url: "https://i.imgur.com/vHqB3qL.png", 
-                content: `📢 **Aktivitas Terbaru Zaraaa | Aksi Terakhir: ${lastAction}**`,
+                content: `⚡ **Aktivitas Log Baru dari Zaraaa**`,
                 embeds: [
                     {
                         title: embedTitle,
-                        description: `${actionHighlight}\n\n` +
-                                     `📊 **Status Aktivitas**\n**${currentMood}**\n\n` +
-                                     `📈 **Level Kangen**\n**${currentLevelKangen}**\n\n` +
-                                     `🚨 **Sinyal Darurat**\n**${sinyalDarurat}**\n\n` +
-                                     `📡 **Love Buzzer Status**\n*${loveBuzzerStatus}*\n\n` +
-                                     `📌 **Memo Terakhir Zaraaa**\n> ${catatanTerakhir}`,
+                        description: deskripsiKontent + `\n\n*Status saat ini:* \n🔹 Mood: ${currentMood}\n🔹 Kangen: ${currentLevelKangen}`,
                         color: embedColor,
                         footer: {
-                            text: `Zaraaa's Dashboard v2.2 // Live Sync Terakhir | Today at ${waktuSekarang}`
+                            text: `Zaraaa's Space v2.2 // Dikirim pada jam ${waktuSekarang}`
                         }
                     }
                 ]
             };
 
             try {
-                let url = DISCORD_WEBHOOK_URL;
-                let method = "POST";
-
-                if (existingMessageId) {
-                    url = `${DISCORD_WEBHOOK_URL}/messages/${existingMessageId}`;
-                    method = "PATCH";
-                } else {
-                    url = `${DISCORD_WEBHOOK_URL}?wait=true`;
-                }
-
-                const response = await fetch(url, {
-                    method: method,
+                // Selalu menggunakan metode POST agar masuk sebagai pesan baru yang berderet ke bawah
+                await fetch(DISCORD_WEBHOOK_URL, {
+                    method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 });
-
-                if (response.ok) {
-                    if (!existingMessageId) {
-                        const resData = await response.json();
-                        existingMessageId = resData.id;
-                        localStorage.setItem("zaraaa_msg_id", existingMessageId);
-                    }
-                } else if (response.status === 404 && existingMessageId) {
-                    localStorage.removeItem("zaraaa_msg_id");
-                    existingMessageId = null;
-                    
-                    await fetch(`${DISCORD_WEBHOOK_URL}?wait=true`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(payload)
-                    }).then(async (res) => {
-                        if (res.ok) {
-                            const resData = await res.json();
-                            existingMessageId = resData.id;
-                            localStorage.setItem("zaraaa_msg_id", existingMessageId);
-                        }
-                    });
-                }
             } catch (err) {
-                console.error("Gagal sinkronisasi ke Discord:", err);
+                console.error("Gagal mengirim log baru ke Discord:", err);
             }
         }
 
         window.onload = function() {
-            sinkronkanKeDiscord();
+            kirimKeDiscordBaru();
         };
     </script>
 </body>
