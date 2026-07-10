@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zaraaa's Personal Space 🌸</title>
+    <title>Zaraaa's Live Space 🌸</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght=500;800&family=Rajdhani:wght=500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -14,7 +14,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Background Cyber-Pop Pink Neon */
         body {
             background: #0d0614;
             background-image: 
@@ -28,10 +27,8 @@
             color: #f8fafc;
             overflow-x: hidden;
             overflow-y: auto;
-            position: relative;
         }
 
-        /* Latar Belakang Partikel Mengambang */
         .bg-particle {
             position: fixed;
             top: -20px;
@@ -48,7 +45,6 @@
             100% { transform: translateY(-10vh) translateX(60px) rotate(360deg); opacity: 0; }
         }
 
-        /* Container Dashboard Utama */
         .dashboard {
             background: rgba(20, 10, 30, 0.75);
             backdrop-filter: blur(25px);
@@ -58,7 +54,7 @@
             border-radius: 30px;
             padding: 30px 20px;
             border: 2px solid rgba(244, 63, 94, 0.4);
-            box-shadow: 0 0 40px rgba(244, 63, 94, 0.2), inset 0 0 20px rgba(232, 121, 249, 0.08);
+            box-shadow: 0 0 40px rgba(244, 63, 94, 0.2);
             text-align: center;
             position: relative;
             z-index: 10;
@@ -77,13 +73,18 @@
             filter: drop-shadow(0 0 10px rgba(244, 63, 94, 0.6));
         }
 
-        .header p {
-            font-size: 0.95rem;
-            color: #a1a1aa;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 30px;
+        /* LIVE REALTIME CLOCK */
+        .live-timer {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: #e879f9;
+            background: rgba(232, 121, 249, 0.1);
+            padding: 4px 12px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 20px;
+            border: 1px solid rgba(232, 121, 249, 0.3);
+            letter-spacing: 1px;
         }
 
         .section-title {
@@ -101,7 +102,6 @@
             gap: 8px;
         }
 
-        /* GRID STATUS SIBUK & MOOD */
         .mood-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -121,7 +121,6 @@
             display: block;
             font-size: 1.8rem;
             margin-bottom: 4px;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
             transition: transform 0.2s;
         }
 
@@ -131,7 +130,7 @@
             color: #cbd5e1;
         }
 
-        .mood-box:hover span { transform: scale(1.15) rotate(-5deg); }
+        .mood-box:hover span { transform: scale(1.15); }
 
         .mood-box.active {
             border-color: #f43f5e;
@@ -142,13 +141,11 @@
 
         .mood-box.active p { color: #fb7185; }
 
-        /* KANGEN SLIDER */
         .bucin-wrapper {
             background: rgba(35, 15, 45, 0.6);
             border-radius: 20px;
             padding: 20px;
             border: 1px solid rgba(232, 121, 249, 0.3);
-            box-shadow: inset 0 0 15px rgba(232, 121, 249, 0.05);
         }
 
         .bucin-header {
@@ -169,7 +166,6 @@
             background: #251236;
             outline: none;
             cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .bucin-slider::-webkit-slider-thumb {
@@ -180,11 +176,8 @@
             background: linear-gradient(45deg, #f43f5e, #e879f9);
             cursor: pointer;
             box-shadow: 0 0 15px #f43f5e;
-            transition: transform 0.1s;
         }
-        .bucin-slider::-webkit-slider-thumb:active { transform: scale(1.2); }
 
-        /* INTERAKSI KILAT */
         .action-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -207,14 +200,11 @@
             transition: all 0.2s;
         }
         .btn-action span { font-size: 2rem; }
-        
+        .btn-action:active { transform: translateY(2px); }
+
         .btn-action.radar { border-color: #e879f9; }
-        .btn-action.radar:active { background: rgba(232, 121, 249, 0.2); transform: translateY(2px); }
-
         .btn-action.emergency { border-color: #f43f5e; color: #fda4af; }
-        .btn-action.emergency:active { background: rgba(244, 63, 94, 0.2); transform: translateY(2px); }
 
-        /* PAPAN PESAN */
         .note-section {
             background: rgba(35, 15, 45, 0.6);
             border-radius: 20px;
@@ -234,7 +224,6 @@
             outline: none;
             margin-bottom: 12px;
         }
-        .note-input:focus { border-color: #f43f5e; box-shadow: 0 0 10px rgba(244, 63, 94, 0.3); }
 
         .btn-send-note {
             background: linear-gradient(90deg, #e11d48, #f43f5e);
@@ -246,12 +235,10 @@
             font-weight: 700;
             font-size: 1rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
         }
 
-        /* LEDAKAN EMOTE SAAT DIKLIK */
         .blast-particle {
             position: fixed;
             pointer-events: none;
@@ -261,11 +248,9 @@
         }
         @keyframes blastOutLite {
             0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
-            10% { opacity: 1; }
-            100% { transform: translate(var(--mx), var(--my)) scale(1.1) rotate(-20deg); opacity: 0; }
+            100% { transform: translate(var(--mx), var(--my)) scale(1.1) opacity: 0; }
         }
 
-        /* TOAST ALERT BOX */
         .toast-container {
             position: fixed;
             top: -100px;
@@ -285,20 +270,20 @@
             max-width: 92vw;
         }
         .toast-container.show { top: 25px; }
-        .toast-msg { font-size: 0.95rem; font-weight: 700; color: #fafafa; letter-spacing: 0.5px; }
+        .toast-msg { font-size: 0.95rem; font-weight: 700; color: #fafafa; }
     </style>
 </head>
 <body>
 
     <div id="custom-toast" class="toast-container">
         <span id="toast-icon">✨</span>
-        <span id="toast-msg" class="toast-msg">Gelombang Terkirim!</span>
+        <span id="toast-msg" class="toast-msg">Terhubung!</span>
     </div>
 
     <div class="dashboard">
         <div class="header">
-            <h1>ZARAAA'S ROOM 🌸</h1>
-            <p>// Co-Pilot Space</p>
+            <h1>ZARAAA'S LIVE ROOM 🌸</h1>
+            <div class="live-timer" id="live-clock">LIVE // 00:00:00</div>
         </div>
 
         <div class="section-title">📊 STATUS AKTIVITAS</div>
@@ -320,15 +305,6 @@
             </div>
             <div class="mood-box" onclick="kirimMood(this, '🧹 Deep Cleaning / Beberes Rumah')">
                 <span>🧹</span><p>Beberes</p>
-            </div>
-            <div class="mood-box" onclick="kirimMood(this, '🎮 Game On / Lagi Main')">
-                <span>🎮</span><p>Gaming</p>
-            </div>
-            <div class="mood-box" onclick="kirimMood(this, '🎬 Movie Time / Maratong')">
-                <span>🎬</span><p>Watching</p>
-            </div>
-            <div class="mood-box" onclick="kirimMood(this, '🚗 On The Way / Di Jalan')">
-                <span>🚗</span><p>On The Way</p>
             </div>
         </div>
 
@@ -356,136 +332,97 @@
 
         <div class="section-title">💬 ENKRIPSI MEMO PAPAN PESAN</div>
         <div class="note-section">
-            <textarea class="note-input" id="note-text" rows="2" placeholder="Tulis keluh kesah, gosip, atau pesan rahasia di sini..."></textarea>
-            <button class="btn-send-note" onclick="kirimCatatan()">Kirim Memo Ke Uqii ✨</button>
+            <textarea class="note-input" id="note-text" rows="2" placeholder="Tulis pesan kilat rahasia di sini..."></textarea>
+            <button class="btn-send-note" onclick="kirimCatatan()">Kirim Memo Live ✨</button>
         </div>
     </div>
 
     <script>
         const DISCORD_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1524831289415434354/EiC3hkhyhbO4yKvPVcvUT3YbOJRMBgsr-LbD5SgqHah9O8Wz9bgoQWFdHKdlqnYPqwCs";
         
-        // SEKARANG BERSIFAT REAL-TIME BERDERET (TIDAK MENGGUNAKAN ID PESAN LAMA)
-        let currentLevelKangen = "50% 📉";
+        // FUNGSI JAM LIVE DETIKAN (Biar di HP terasa berjalan real-time tiap detik)
+        function jalankanJamRealtime() {
+            const clockEl = document.getElementById("live-clock");
+            setInterval(() => {
+                const sekarang = new Date();
+                const jam = String(sekarang.getHours()).padStart(2, '0');
+                const menit = String(sekarang.getMinutes()).padStart(2, '0');
+                const detik = String(sekarang.getSeconds()).padStart(2, '0');
+                clockEl.innerText = `LIVE // ${jam}:${menit}:${detik}`;
+            }, 1000);
+        }
+
+        function dapatkanKunciHariIni() {
+            const d = new Date();
+            return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+        }
+
+        // STATE UTAMA
+        let currentLevelKangen = "50%";
         let currentMood = "Belum Diatur 📋";
-        let lastAction = "SYSTEM CORE ONLINE";
+        let sinyalDarurat = "Kondisi Aman ✅";
+        let loveBuzzerStatus = "Belum ada interaksi terbaru 📡";
+        let catatanTerakhir = "Belum ada pesan terbaru 💬";
+        let lastAction = "DASHBOARD REALTIME ONLINE";
 
         const teksPing = [
             "Zaraaa mendadak kangen berat sama Uqii! 👀🔥",
             "Sinyal gemas meluncur, Uqii wajib bales secepatnya! 🚀🌸",
-            "Cuma mau nge-ping biar Uqii tahu kalau Zaraaa lagi mikirin Uqii 😜✨",
-            "Deteksi kangen berbunyi: Uqii mana yaaa? 🛰️🎀"
+            "Cuma mau nge-ping biar Uqii tahu kalau Zaraaa lagi mikirin Uqii 😜✨"
         ];
 
         const teksPerhatian = [
             "Zaraaa lagi butuh perhatian lebih/pukpuk secepatnya! 🥺💝",
-            "SOS! Asupan manja Zaraaa menipis, Uqii dimohon merapat! 🚨🧸",
-            "Butuh di-pukpuk dan ditemenin Uqii sekarang juga! 😭✨",
-            "Mode manja aktif total, Uqii sibuk ngga yaaa? 👀🎀"
+            "SOS! Asupan manja Zaraaa menipis, Uqii dimohon merapat! 🚨🧸"
         ];
 
-        // ENGINE SOUND EFED - WEB AUDIO API
-        function mainkanSuaraLucu(tipe) {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const ctx = new AudioContext();
-                
-                const osc = ctx.createOscillator();
-                const gainNode = ctx.createGain();
-                
-                osc.connect(gainNode);
-                gainNode.connect(ctx.destination);
-                
-                const sekarang = ctx.currentTime;
-                
-                if (tipe === 'boing') {
-                    osc.type = 'triangle'; 
-                    osc.frequency.setValueAtTime(150, sekarang);
-                    osc.frequency.exponentialRampToValueAtTime(600, sekarang + 0.3);
-                    
-                    gainNode.gain.setValueAtTime(0.3, sekarang);
-                    gainNode.gain.linearRampToValueAtTime(0.01, sekarang + 0.3);
-                    
-                    osc.start(sekarang);
-                    osc.stop(sekarang + 0.3);
-                    
-                } else if (tipe === 'alarm') {
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(800, sekarang);
-                    
-                    for (let i = 0; i < 6; i++) {
-                        osc.frequency.linearRampToValueAtTime(900, sekarang + (i * 0.08));
-                        osc.frequency.linearRampToValueAtTime(400, sekarang + (i * 0.08) + 0.04);
-                    }
-                    
-                    gainNode.gain.setValueAtTime(0.2, sekarang);
-                    gainNode.gain.linearRampToValueAtTime(0.01, sekarang + 0.45);
-                    
-                    osc.start(sekarang);
-                    osc.stop(sekarang + 0.45);
-                }
-            } catch (e) {
-                console.log("Audio ditolak sebelum interaksi.");
-            }
-        }
-
         function buatPartikelLatar() {
-            if (document.visibilityState !== 'visible') return; 
-            const emojis = ["✨", "💖", "🌸", "🎵", "🔮"];
+            if (document.visibilityState !== 'visible') return;
+            const emojis = ["✨", "💖", "🌸"];
             const p = document.createElement("div");
             p.classList.add("bg-particle");
             p.innerText = emojis[Math.floor(Math.random() * emojis.length)];
             p.style.left = Math.random() * 100 + "vw";
             p.style.animationDuration = (Math.random() * 3 + 4) + "s";
             document.body.appendChild(p);
-            setTimeout(() => p.remove(), 7000);
+            setTimeout(() => p.remove(), 6000);
         }
-        setInterval(buatPartikelLatar, 700); 
+        setInterval(buatPartikelLatar, 800);
 
         function showToast(message, icon = "✨") {
             const toast = document.getElementById("custom-toast");
             document.getElementById("toast-msg").innerText = message;
             document.getElementById("toast-icon").innerText = icon;
             toast.classList.add("show");
-            setTimeout(() => toast.classList.remove("show"), 2500);
+            setTimeout(() => toast.classList.remove("show"), 2000);
         }
 
         function buatLedakanPartikel(x, y, jumlah = 5) {
-            const partikelOpsi = ["🌸", "✨", "💖", "🎀", "🔥"];
             for (let i = 0; i < jumlah; i++) {
                 const p = document.createElement("div");
                 p.classList.add("blast-particle");
-                p.innerText = partikelOpsi[Math.floor(Math.random() * partikelOpsi.length)];
+                p.innerText = "💖";
                 p.style.left = x + "px";
                 p.style.top = y + "px";
-                
                 const sudut = Math.random() * Math.PI * 2;
-                const jarak = Math.random() * 80 + 20; 
-                const mx = Math.cos(sudut) * jarak + "px";
-                const my = Math.sin(sudut) * jarak + "px";
-
-                p.style.setProperty('--mx', mx);
-                p.style.setProperty('--my', my);
-
+                const jarak = Math.random() * 60 + 20;
+                p.style.setProperty('--mx', Math.cos(sudut) * jarak + "px");
+                p.style.setProperty('--my', Math.sin(sudut) * jarak + "px");
                 document.body.appendChild(p);
-                setTimeout(() => p.remove(), 800); 
+                setTimeout(() => p.remove(), 700);
             }
         }
 
         function updateBucin(val) {
-            let statusIcon = "📉 Mengalir Santai";
-            if(val > 35) statusIcon = "📈 Mulai Terasa";
-            if(val > 70) statusIcon = "🔥 Kangen Berat!";
-            if(val >= 95) statusIcon = "💖 EXPLODE KANGENNYA!";
-            
-            currentLevelKangen = val + "% (" + statusIcon + ")";
-            document.getElementById("bucin-val").innerText = val + "%";
+            currentLevelKangen = val + "%";
+            document.getElementById("bucin-val").innerText = currentLevelKangen;
         }
 
+        // TRIGGER INSTAN BEGITU SLIDER DILEPAS
         document.getElementById("love-slider").addEventListener("change", function() {
-            showToast(`Sinyal kangen disetel ke: ${currentLevelKangen}`, "📈");
+            showToast(`Kangen disetel: ${currentLevelKangen}`, "📈");
             lastAction = "LEVEL KANGEN BERUBAH";
-            kirimKeDiscordBaru();
+            sinkronkanKeDiscord();
         });
 
         function kirimMood(elemen, namaMood) {
@@ -494,112 +431,110 @@
             currentMood = namaMood;
             showToast(`Status: ${namaMood}`, "📊");
             lastAction = "MOOD TERKINI BERUBAH";
-            kirimKeDiscordBaru();
+            sinkronkanKeDiscord();
         }
 
         function pencetBuzzer(e) {
-            mainkanSuaraLucu('boing'); 
-            buatLedakanPartikel(e.clientX, e.clientY, 5); 
+            buatLedakanPartikel(e.clientX, e.clientY, 5);
             const teks = teksPing[Math.floor(Math.random() * teksPing.length)];
-            showToast(teks, "🛰️");
+            loveBuzzerStatus = `💖 PING! "${teks}"`;
+            showToast("Ping Terkirim!", "🛰️");
             lastAction = "RADAR TRANSMITTER PING";
-            kirimKeDiscordBaru(teks);
+            sinkronkanKeDiscord();
         }
 
         function panggilDarurat(e) {
-            mainkanSuaraLucu('alarm'); 
-            buatLedakanPartikel(e.clientX, e.clientY, 10); 
+            buatLedakanPartikel(e.clientX, e.clientY, 8);
             const teksSOS = teksPerhatian[Math.floor(Math.random() * teksPerhatian.length)];
-            showToast(teksSOS, "🚨");
+            sinyalDarurat = `🚨 NEED ATTENTION: "${teksSOS}"`;
+            showToast("SOS Diaktifkan!", "🚨");
             lastAction = "EMERGENCY CORE TRIGGERED";
-            kirimKeDiscordBaru(teksSOS);
+            sinkronkanKeDiscord();
         }
 
         function kirimCatatan() {
             const area = document.getElementById("note-text");
             const isi = area.value.trim();
-            if(!isi) {
-                showToast("Pesan tidak boleh kosong!", "⚠️");
-                return;
-            }
-            showToast("Memo terenkripsi berhasil dikirim!", "📌");
+            if(!isi) return;
+            catatanTerakhir = isi;
+            showToast("Memo Terkirim!", "📌");
             area.value = "";
-            lastAction = "DEKRIPSI TERMINAL PESAN MASUK";
-            kirimKeDiscordBaru(isi);
+            lastAction = "PESAN LIVE MASUK";
+            sinkronkanKeDiscord();
         }
 
-        // FUNGSI INI AKAN SELALU MEMBUAT NOTIFIKASI BARU (POST)
-        async function kirimKeDiscordBaru(pesanSpesifik = null) {
-            const waktuSekarang = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        // INSTANT LIVE SYNC ENGINE (1 PESAN TERINTEGRASI)
+        async function sinkronkanKeDiscord() {
+            const sekarang = new Date();
+            const waktuUpdate = sekarang.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const hariIni = dapatkanKunciHariIni();
             
-            let embedTitle = "🌸 ZARAAA'S LOVE DASHBOARD";
-            let embedColor = 15728564; 
-            let deskripsiKontent = "";
+            const hariTerakhirDisimpan = localStorage.getItem("zaraaa_last_date");
+            let existingMessageId = localStorage.getItem("zaraaa_msg_id") || null;
 
-            // Menyesuaikan tampilan berdasarkan tombol apa yang ditekan Zaraaa
-            switch(lastAction) {
-                case "SYSTEM CORE ONLINE":
-                    embedTitle = "🌸 SYSTEM ONLINE";
-                    deskripsiKontent = "✨ Satelit pemancar dashboard Zaraaa kini aktif mendampingi Uqii!";
-                    embedColor = 16742314; 
-                    break;
-                case "MOOD TERKINI BERUBAH":
-                    embedTitle = "📊 UPDATE STATUS AKTIVITAS ZARAAA";
-                    deskripsiKontent = `Zaraaa mengubah statusnya menjadi:\n✨ **${currentMood}**`;
-                    embedColor = 15219166; 
-                    break;
-                case "LEVEL KANGEN BERUBAH":
-                    embedTitle = "📈 SINYAL LEVEL KANGEN BERUBAH";
-                    deskripsiKontent = `Zaraaa memperbarui tingkat radar kangen:\n💟 **${currentLevelKangen}**`;
-                    embedColor = 16007386; 
-                    break;
-                case "RADAR TRANSMITTER PING":
-                    embedTitle = "🛰️ ZARAAA BUZZ PING!";
-                    deskripsiKontent = `📢 **Pesan Masuk:**\n*"${pesanSpesifik}"*`;
-                    embedColor = 16723636; 
-                    break;
-                case "EMERGENCY CORE TRIGGERED":
-                    embedTitle = "🚨 EMERGENCY: BUTUH PERHATIAN CO-PILOT";
-                    deskripsiKontent = `⚠️ **Kondisi Kritis:**\n*"${pesanSpesifik}"*`;
-                    embedColor = 16718131; 
-                    break;
-                case "DEKRIPSI TERMINAL PESAN MASUK":
-                    embedTitle = "💬 MEMO TERMINAL DARI ZARAAA";
-                    deskripsiKontent = `📌 **Isi Pesan/Memo:**\n> ${pesanSpesifik}`;
-                    embedColor = 16758464; 
-                    break;
+            // Reset ID tiap hari baru supaya memicu 1 notifikasi baru di pagi hari
+            if (hariTerakhirDisimpan !== hariIni) {
+                existingMessageId = null;
+                localStorage.removeItem("zaraaa_msg_id");
             }
 
             const payload = {
-                username: "Zaraaa's Active Logger",
-                avatar_url: "https://i.imgur.com/vHqB3qL.png", 
-                content: `⚡ **Aktivitas Log Baru dari Zaraaa**`,
+                username: "Zaraaa Live Dashboard",
+                avatar_url: "https://i.imgur.com/vHqB3qL.png",
+                content: `⚡ **Live Update | Hari ini: ${hariIni}**`,
                 embeds: [
                     {
-                        title: embedTitle,
-                        description: deskripsiKontent + `\n\n*Status saat ini:* \n🔹 Mood: ${currentMood}\n🔹 Kangen: ${currentLevelKangen}`,
-                        color: embedColor,
+                        title: "🟢 ZARAAA'S LIVE DASHBOARD (REALTIME)",
+                        description: `📍 **Aksi Terakhir:** \`${lastAction}\`\n\n` +
+                                     `📊 **Status Aktivitas:**\n**${currentMood}**\n\n` +
+                                     `📈 **Radar Kangen:**\n**${currentLevelKangen}**\n\n` +
+                                     `🚨 **Sinyal Darurat:**\n**${sinyalDarurat}**\n\n` +
+                                     `📡 **Love Buzzer:**\n*${loveBuzzerStatus}*\n\n` +
+                                     `📌 **Memo Masuk:**\n> ${catatanTerakhir}`,
+                        color: 16742314,
                         footer: {
-                            text: `Zaraaa's Space v2.2 // Dikirim pada jam ${waktuSekarang}`
+                            text: `Sinkronisasi Instan Sukses pada [ ${waktuUpdate} WIB ]`
                         }
                     }
                 ]
             };
 
             try {
-                // Selalu menggunakan metode POST agar masuk sebagai pesan baru yang berderet ke bawah
-                await fetch(DISCORD_WEBHOOK_URL, {
-                    method: "POST",
+                let url = DISCORD_WEBHOOK_URL;
+                let method = "POST";
+
+                if (existingMessageId) {
+                    url = `${DISCORD_WEBHOOK_URL}/messages/${existingMessageId}`;
+                    method = "PATCH";
+                } else {
+                    url = `${DISCORD_WEBHOOK_URL}?wait=true`;
+                }
+
+                const response = await fetch(url, {
+                    method: method,
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 });
+
+                if (response.ok) {
+                    if (!existingMessageId) {
+                        const resData = await response.json();
+                        localStorage.setItem("zaraaa_msg_id", resData.id);
+                        localStorage.setItem("zaraaa_last_date", hariIni);
+                    }
+                } else if (response.status === 404 && existingMessageId) {
+                    // Proteksi jika pesan tidak sengaja terhapus di Discord
+                    localStorage.removeItem("zaraaa_msg_id");
+                    sinkronkanKeDiscord();
+                }
             } catch (err) {
-                console.error("Gagal mengirim log baru ke Discord:", err);
+                console.error("Gagal sinkronisasi:", err);
             }
         }
 
         window.onload = function() {
-            kirimKeDiscordBaru();
+            jalankanJamRealtime();
+            sinkronkanKeDiscord();
         };
     </script>
 </body>
