@@ -14,7 +14,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Background Cyber-Pop Pink Neon */
         body {
             background: #0d0614;
             background-image: 
@@ -31,7 +30,6 @@
             position: relative;
         }
 
-        /* Latar Belakang Partikel Mengambang */
         .bg-particle {
             position: fixed;
             top: -20px;
@@ -48,7 +46,6 @@
             100% { transform: translateY(-10vh) translateX(60px) rotate(360deg); opacity: 0; }
         }
 
-        /* Container Dashboard Utama */
         .dashboard {
             background: rgba(20, 10, 30, 0.75);
             backdrop-filter: blur(25px);
@@ -101,7 +98,6 @@
             gap: 8px;
         }
 
-        /* GRID STATUS SIBUK & MOOD */
         .mood-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -142,7 +138,6 @@
 
         .mood-box.active p { color: #fb7185; }
 
-        /* KANGEN SLIDER */
         .bucin-wrapper {
             background: rgba(35, 15, 45, 0.6);
             border-radius: 20px;
@@ -184,7 +179,6 @@
         }
         .bucin-slider::-webkit-slider-thumb:active { transform: scale(1.2); }
 
-        /* INTERAKSI KILAT */
         .action-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -214,7 +208,6 @@
         .btn-action.emergency { border-color: #f43f5e; color: #fda4af; }
         .btn-action.emergency:active { background: rgba(244, 63, 94, 0.2); transform: translateY(2px); }
 
-        /* PAPAN PESAN */
         .note-section {
             background: rgba(35, 15, 45, 0.6);
             border-radius: 20px;
@@ -251,7 +244,6 @@
             box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
         }
 
-        /* LEDAKAN EMOTE SAAT DIKLIK */
         .blast-particle {
             position: fixed;
             pointer-events: none;
@@ -265,7 +257,6 @@
             100% { transform: translate(var(--mx), var(--my)) scale(1.1) rotate(-20deg); opacity: 0; }
         }
 
-        /* TOAST ALERT BOX */
         .toast-container {
             position: fixed;
             top: -100px;
@@ -388,10 +379,8 @@
             "Mode manja aktif total, Uqii sibuk ngga yaaa? 👀🎀"
         ];
 
-        // ENGINE SOUND EFED - WEB AUDIO API
         function mainkanSuaraLucu(tipe) {
             try {
-                // Inisialisasi Audio Context
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (!AudioContext) return;
                 const ctx = new AudioContext();
@@ -424,14 +413,14 @@
                         osc.frequency.linearRampToValueAtTime(400, sekarang + (i * 0.08) + 0.04);
                     }
                     
-                    gainNode.gain.setValueAtTime(0.2, sekarang);
+                    gainNode.gain.setValueAtTime(0.2, excavations = sekarang);
                     gainNode.gain.linearRampToValueAtTime(0.01, sekarang + 0.45);
                     
                     osc.start(sekarang);
                     osc.stop(sekarang + 0.45);
                 }
             } catch (e) {
-                console.log("Audio ditolak browser sebelum ada interaksi pertama.");
+                console.log("Audio ditolak browser.");
             }
         }
 
@@ -532,63 +521,34 @@
             sinkronkanKeDiscord();
         }
 
-        // SINKRONISASI DISCORD
+        // ENGINE SINKRONISASI SINGLE-MESSAGE PERMANEN (PERSIS SEPERTI DI GAMBAR)
         async function sinkronkanKeDiscord() {
-            const waktuSekarang = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            const sekarang = new Date();
+            const jamMenit = String(sekarang.getHours()).padStart(2, '0') + "." + String(sekarang.getMinutes()).padStart(2, '0');
             
-            let embedTitle = "🌸 ZARAAA'S LOVE DASHBOARD STATUS";
-            let actionHighlight = `Status kumulatif saat aktivitas "${lastAction}" dipicu:`;
-            let embedColor = 15728564; 
-
-            switch(lastAction) {
-                case "SYSTEM CORE ONLINE":
-                    embedTitle = "🌸 ZARAAA SYSTEM ONLINE";
-                    actionHighlight = "Satelit pemancar dashboard Zaraaa kini aktif mendampingi Uqii! ✨";
-                    embedColor = 16742314; 
-                    break;
-                case "MOOD TERKINI BERUBAH":
-                    embedTitle = "🌸 📊 UPDATE STATUS AKTIVITAS";
-                    actionHighlight = `Aktivitas & kondisi Zaraaa saat ini: **${currentMood}**`;
-                    embedColor = 15219166; 
-                    break;
-                case "LEVEL KANGEN BERUBAH":
-                    embedTitle = "🌸 📥 SINKRONISASI KANGEN";
-                    actionHighlight = `Zaraaa memperbarui tingkat radar kangen ke: **${currentLevelKangen}**`;
-                    embedColor = 16007386; 
-                    break;
-                case "RADAR TRANSMITTER PING":
-                    embedTitle = "🌸 🛰️ RADAR TRANSMITTER PING";
-                    actionHighlight = `🚨 **ZARAAA BUZZ PING!** 🚨\n*${loveBuzzerStatus.replace('💖 PING! ', '')}*`;
-                    embedColor = 16723636; 
-                    break;
-                case "EMERGENCY CORE TRIGGERED":
-                    embedTitle = "🚨 EMERGENCY CO-PILOT NEEDED";
-                    actionHighlight = `⚠️ **PROSEDUR CRITICAL:**\n*${sinyalDarurat.replace('🚨 NEED ATTENTION: ', '')}*`;
-                    embedColor = 16718131; 
-                    break;
-                case "DEKRIPSI TERMINAL PESAN MASUK":
-                    embedTitle = "💬 DEKRIPSI TERMINAL PESAN MASUK";
-                    actionHighlight = `Sebuah transkrip rahasia masuk dari Zaraaa untuk Uqii.`;
-                    embedColor = 16758464; 
-                    break;
+            // Ekstraksi kutipan kritis dari sinyal darurat
+            let teksProsedur = '"Tidak ada status darurat aktif"';
+            if (sinyalDarurat.includes('"')) {
+                teksProsedur = sinyalDarurat.substring(sinyalDarurat.indexOf('"'));
             }
 
+            // Struktur payload diatur mutlak agar 100% mirip dengan tangkapan layar target
             const payload = {
                 username: "Zaraaa's Dashboard v2.2",
                 avatar_url: "https://i.imgur.com/vHqB3qL.png", 
                 content: `📢 **Aktivitas Terbaru Zaraaa | Aksi Terakhir: ${lastAction}**`,
                 embeds: [
                     {
-                        title: embedTitle,
-                        description: `${actionHighlight}\n\n` +
-                                     `📊 **Status Aktivitas**\n**${currentMood}**\n\n` +
+                        title: "🚨 EMERGENCY CO-PILOT NEEDED",
+                        description: `⚠️ **PROSEDUR CRITICAL:**\n${teksProsedur}\n\n` +
+                                     `📊 **Status Aktivitas**\n${currentMood}\n\n` +
                                      `📈 **Level Kangen**\n**${currentLevelKangen}**\n\n` +
-                                     `🚨 **Sinyal Darurat**\n**${sinyalDarurat}**\n\n` +
-                                     `📡 **Love Buzzer Status**\n*${loveBuzzerStatus}*\n\n` +
+                                     `🚨 **Sinyal Darurat**\n${sinyalDarurat}\n\n` +
+                                     `🛰️ **Love Buzzer Status**\n${loveBuzzerStatus}\n\n` +
                                      `📌 **Memo Terakhir Zaraaa**\n> ${catatanTerakhir}`,
-                        color: embedColor,
+                        color: 15729726, // Warna garis merah neon solid (#F0033E dalam desimal)
                         footer: {
-                            text: `Zaraaa's Dashboard v2.2 // Live Sync Terakhir | Today at ${waktuSekarang}`
+                            text: `Zaraaa's Dashboard v2.2 // Live Sync Terakhir | Today at ${jamMenit}`
                         }
                     }
                 ]
@@ -620,18 +580,7 @@
                 } else if (response.status === 404 && existingMessageId) {
                     localStorage.removeItem("zaraaa_msg_id");
                     existingMessageId = null;
-                    
-                    await fetch(`${DISCORD_WEBHOOK_URL}?wait=true`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(payload)
-                    }).then(async (res) => {
-                        if (res.ok) {
-                            const resData = await res.json();
-                            existingMessageId = resData.id;
-                            localStorage.setItem("zaraaa_msg_id", existingMessageId);
-                        }
-                    });
+                    sinkronkanKeDiscord();
                 }
             } catch (err) {
                 console.error("Gagal sinkronisasi ke Discord:", err);
